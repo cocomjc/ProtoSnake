@@ -37,22 +37,44 @@ public class GridMovement : MonoBehaviour
         if (draggingComponent.dragging)
         {
             Vector2 direction = Vector2.zero;
-            Debug.Log("ways:" + currentWays.Count);
-            foreach(GameObject way in currentWays)
+            Vector3 targetPosOffset = draggingComponent.targetPos - transform.position;
+            float latePos = 0;
+
+            Debug.Log("offset dir = " + targetPosOffset);
+            foreach (GameObject way in currentWays)
             {
-                Debug.Log(way.transform.localScale);
-                if (way.transform.localScale.x > .3)
-                    direction.x = draggingComponent.targetPos.x;
-                else if (way.transform.localScale.z > .3)
-                    direction.y = draggingComponent.targetPos.z;
+                //Debug.Log(way.transform.localScale);
+                if (way.transform.localScale.z > .5) {
+                    Debug.Log("testing vertical with " + Mathf.Abs(targetPosOffset.z) + " > " + Mathf.Abs(direction.x));
+                    if (Mathf.Abs(targetPosOffset.z) > Mathf.Abs(direction.x))
+                    {
+                        direction = new Vector2(0, targetPosOffset.z);
+                        latePos = way.transform.position.x;
+                    }
+                }
+                else if (way.transform.localScale.x > .5) {
+                    Debug.Log("testing horizontal with " + Mathf.Abs(targetPosOffset.x) + " > " + Mathf.Abs(direction.y));
+                    if (Mathf.Abs(targetPosOffset.x) > Mathf.Abs(direction.y))
+                    {
+                        direction = new Vector2(targetPosOffset.x, 0);
+                        latePos = way.transform.position.z;
+                    }
+                }
             }
-            if (direction.x > direction.y)
-                direction.y = 0;
-            else
-                direction.x = 0;
-            Vector3 target = new Vector3(direction.x, 0, direction.y);
-            transform.position = Vector3.Lerp(transform.position, target, timer / 5);
-            timer += Time.deltaTime;
+            Debug.Log("final direction: " + direction);
+            //direction = (direction.x == 0) ? new Vector2(latePos, direction.y) : new Vector2(direction.x, latePos);
+            Vector3 target = new Vector3(direction.x, 0, direction.y) + transform.position;
+
+            if (direction.x == 0 && direction != Vector2.zero)
+                target.x = latePos;
+            else if (direction != Vector2.zero)
+                target.z = latePos;
+
+            //Vector3 target = new Vector3(direction.x, 0, direction.y) + transform.position;
+            Debug.Log("latePos: " + latePos);
+            transform.position = target;
+            //transform.position = Vector3.Lerp(transform.position, target, timer / 5);
+            //timer += Time.deltaTime;
         }
     }
 }

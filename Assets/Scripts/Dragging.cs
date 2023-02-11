@@ -42,6 +42,7 @@ public class Dragging : MonoBehaviour
             v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, dist);
             v3 = Camera.main.ScreenToWorldPoint(v3);
             targetPos = - new Vector3(v3.x, 0, v3.z);
+            //Debug.Log("target: " + targetPos);
         }
 
         if (dragging && (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled))
