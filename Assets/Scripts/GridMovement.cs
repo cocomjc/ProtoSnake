@@ -7,6 +7,7 @@ public class GridMovement : MonoBehaviour
     private Dragging draggingComponent;
     private float timer = 0;
     private List<GameObject> currentWays = new List<GameObject>();
+    private float tresholdValue = .3f;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +42,9 @@ public class GridMovement : MonoBehaviour
             float latePos = 0;
             Collider currentPathCollider = null;
 
+            Debug.Log("targetPosOffset: " + targetPosOffset);
+            if (Mathf.Abs(targetPosOffset.x) < tresholdValue && Mathf.Abs(targetPosOffset.z) < tresholdValue)
+                return;
             Debug.Log("offset dir = " + targetPosOffset);
             foreach (GameObject way in currentWays)
             {

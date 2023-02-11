@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "22241FDEE002B5",
         "name": "com.DefaultCompany.ProtoSnakeMake",
-        "processId": 7035,
+        "processId": 18930,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -18,12 +18,36 @@
             "deviceId": "22241FDEE002B5",
             "name": "com.DefaultCompany.ProtoSnakeMake",
             "processId": 6175,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "22241FDEE002B5",
             "name": "com.DefaultCompany.ProtoSnakeMake",
             "processId": 7035,
+            "exited": true
+        },
+        {
+            "deviceId": "22241FDEE002B5",
+            "name": "com.DefaultCompany.ProtoSnakeMake",
+            "processId": 14312,
+            "exited": true
+        },
+        {
+            "deviceId": "22241FDEE002B5",
+            "name": "com.DefaultCompany.ProtoSnakeMake",
+            "processId": 15012,
+            "exited": true
+        },
+        {
+            "deviceId": "22241FDEE002B5",
+            "name": "com.DefaultCompany.ProtoSnakeMake",
+            "processId": 16483,
+            "exited": false
+        },
+        {
+            "deviceId": "22241FDEE002B5",
+            "name": "com.DefaultCompany.ProtoSnakeMake",
+            "processId": 18930,
             "exited": false
         }
     ],
