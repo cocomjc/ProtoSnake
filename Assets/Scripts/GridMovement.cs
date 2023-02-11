@@ -39,6 +39,7 @@ public class GridMovement : MonoBehaviour
             Vector2 direction = Vector2.zero;
             Vector3 targetPosOffset = draggingComponent.targetPos - transform.position;
             float latePos = 0;
+            Collider currentPathCollider = null;
 
             Debug.Log("offset dir = " + targetPosOffset);
             foreach (GameObject way in currentWays)
@@ -50,6 +51,7 @@ public class GridMovement : MonoBehaviour
                     {
                         direction = new Vector2(0, targetPosOffset.z);
                         latePos = way.transform.position.x;
+                        currentPathCollider = way.GetComponent<Collider>();
                     }
                 }
                 else if (way.transform.localScale.x > .5) {
@@ -58,6 +60,7 @@ public class GridMovement : MonoBehaviour
                     {
                         direction = new Vector2(targetPosOffset.x, 0);
                         latePos = way.transform.position.z;
+                        currentPathCollider = way.GetComponent<Collider>();
                     }
                 }
             }
@@ -72,9 +75,11 @@ public class GridMovement : MonoBehaviour
 
             //Vector3 target = new Vector3(direction.x, 0, direction.y) + transform.position;
             Debug.Log("latePos: " + latePos);
-            transform.position = target;
-            //transform.position = Vector3.Lerp(transform.position, target, timer / 5);
-            //timer += Time.deltaTime;
+            //transform.position = target;
+            target = Vector3.Lerp(transform.position, target, timer / 5);
+            if (currentPathCollider && currentPathCollider.bounds.Contains(target))
+                transform.position = target;
+            timer += Time.deltaTime;
         }
     }
 }
