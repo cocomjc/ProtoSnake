@@ -8,10 +8,13 @@ public class GridMovement : MonoBehaviour
     private float timer = 0;
     private List<GameObject> currentWays = new List<GameObject>();
     private float tresholdValue = .3f;
+    private Directions currentDir;
+    [SerializeField] private DirectionEvent onDirectionChange;
 
     // Start is called before the first frame update
     void Start()
     {
+        currentDir = Directions.Init;
         draggingComponent = GetComponent<Dragging>();
     }
 
@@ -42,15 +45,15 @@ public class GridMovement : MonoBehaviour
             float latePos = 0;
             Collider currentPathCollider = null;
 
-            Debug.Log("targetPosOffset: " + targetPosOffset);
+            //Debug.Log("targetPosOffset: " + targetPosOffset);
             if (Mathf.Abs(targetPosOffset.x) < tresholdValue && Mathf.Abs(targetPosOffset.z) < tresholdValue)
                 return;
-            Debug.Log("offset dir = " + targetPosOffset);
+            //Debug.Log("offset dir = " + targetPosOffset);
             foreach (GameObject way in currentWays)
             {
                 //Debug.Log(way.transform.localScale);
                 if (way.transform.localScale.z > .5) {
-                    Debug.Log("testing vertical with " + Mathf.Abs(targetPosOffset.z) + " > " + Mathf.Abs(direction.x));
+                    //Debug.Log("testing vertical with " + Mathf.Abs(targetPosOffset.z) + " > " + Mathf.Abs(direction.x));
                     if (Mathf.Abs(targetPosOffset.z) > Mathf.Abs(direction.x))
                     {
                         direction = new Vector2(0, targetPosOffset.z);
@@ -59,7 +62,7 @@ public class GridMovement : MonoBehaviour
                     }
                 }
                 else if (way.transform.localScale.x > .5) {
-                    Debug.Log("testing horizontal with " + Mathf.Abs(targetPosOffset.x) + " > " + Mathf.Abs(direction.y));
+                    //Debug.Log("testing horizontal with " + Mathf.Abs(targetPosOffset.x) + " > " + Mathf.Abs(direction.y));
                     if (Mathf.Abs(targetPosOffset.x) > Mathf.Abs(direction.y))
                     {
                         direction = new Vector2(targetPosOffset.x, 0);
@@ -68,17 +71,31 @@ public class GridMovement : MonoBehaviour
                     }
                 }
             }
-            Debug.Log("final direction: " + direction);
+            //Debug.Log("final direction: " + direction);
             //direction = (direction.x == 0) ? new Vector2(latePos, direction.y) : new Vector2(direction.x, latePos);
             Vector3 target = new Vector3(direction.x, 0, direction.y) + transform.position;
 
             if (direction.x == 0 && direction != Vector2.zero)
+            {
                 target.x = latePos;
+                if (currentDir != Directions.Vertical)
+                {
+                    currentDir = Directions.Vertical;
+                    onDirectionChange.RaiseEvent(currentDir);
+                }
+            }
             else if (direction != Vector2.zero)
+            {
                 target.z = latePos;
+                if (currentDir != Directions.Horizontal)
+                {
+                    currentDir = Directions.Horizontal;
+                    onDirectionChange.RaiseEvent(currentDir);
+                }
+            }
 
             //Vector3 target = new Vector3(direction.x, 0, direction.y) + transform.position;
-            Debug.Log("latePos: " + latePos);
+            //Debug.Log("latePos: " + latePos);
             //transform.position = target;
             target = Vector3.Lerp(transform.position, target, timer / 5);
             if (currentPathCollider && currentPathCollider.bounds.Contains(target))
