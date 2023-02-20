@@ -5,22 +5,23 @@ using UnityEngine;
 public class GridMovement : MonoBehaviour
 {
     private Dragging draggingComponent;
-    private float timer = 0;
-    private List<GameObject> currentWays = new List<GameObject>();
-    private float tresholdValue = .3f;
+    private TrailManager trailManager;
+    [SerializeField] private List<GameObject> currentWays = new List<GameObject>();
     private Directions currentDir;
     [SerializeField] private DirectionEvent onDirectionChange;
+    [SerializeField] private float lerpSpeed = 5f;
+    [SerializeField] private float tresholdValue = .3f;
 
     // Start is called before the first frame update
     void Start()
     {
         currentDir = Directions.Init;
         draggingComponent = GetComponent<Dragging>();
+        trailManager = GetComponent<TrailManager>();
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("SIIUU");
         if (other.gameObject.tag == "Way")
         {
             currentWays.Add(other.gameObject);
@@ -45,15 +46,17 @@ public class GridMovement : MonoBehaviour
             float latePos = 0;
             Collider currentPathCollider = null;
 
-            //Debug.Log("targetPosOffset: " + targetPosOffset);
+            //Quick exit if we are not far enough to the player
             if (Mathf.Abs(targetPosOffset.x) < tresholdValue && Mathf.Abs(targetPosOffset.z) < tresholdValue)
                 return;
-            //Debug.Log("offset dir = " + targetPosOffset);
+
+            //Computing direction wich is the biggest offset vertical or horizontal
             foreach (GameObject way in currentWays)
             {
-                //Debug.Log(way.transform.localScale);
+                //Determine if the way is horizontal or vertical
+                // MAGIC VALUE A CORRIGER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 if (way.transform.localScale.z > .5) {
-                    //Debug.Log("testing vertical with " + Mathf.Abs(targetPosOffset.z) + " > " + Mathf.Abs(direction.x));
+                    //Test if vertical offset is bigger than horizontal
                     if (Mathf.Abs(targetPosOffset.z) > Mathf.Abs(direction.x))
                     {
                         direction = new Vector2(0, targetPosOffset.z);
@@ -62,7 +65,6 @@ public class GridMovement : MonoBehaviour
                     }
                 }
                 else if (way.transform.localScale.x > .5) {
-                    //Debug.Log("testing horizontal with " + Mathf.Abs(targetPosOffset.x) + " > " + Mathf.Abs(direction.y));
                     if (Mathf.Abs(targetPosOffset.x) > Mathf.Abs(direction.y))
                     {
                         direction = new Vector2(targetPosOffset.x, 0);
@@ -71,13 +73,13 @@ public class GridMovement : MonoBehaviour
                     }
                 }
             }
-            //Debug.Log("final direction: " + direction);
-            //direction = (direction.x == 0) ? new Vector2(latePos, direction.y) : new Vector2(direction.x, latePos);
             Vector3 target = new Vector3(direction.x, 0, direction.y) + transform.position;
 
             if (direction.x == 0 && direction != Vector2.zero)
             {
                 target.x = latePos;
+                transform.position = new Vector3(target.x, 0, transform.position.z);
+                // We determined that the movement is vertical, if it was not the case before, we raise the event onDirectionChange
                 if (currentDir != Directions.Vertical)
                 {
                     currentDir = Directions.Vertical;
@@ -87,6 +89,7 @@ public class GridMovement : MonoBehaviour
             else if (direction != Vector2.zero)
             {
                 target.z = latePos;
+                transform.position = new Vector3(transform.position.x, 0, target.z);
                 if (currentDir != Directions.Horizontal)
                 {
                     currentDir = Directions.Horizontal;
@@ -94,13 +97,24 @@ public class GridMovement : MonoBehaviour
                 }
             }
 
-            //Vector3 target = new Vector3(direction.x, 0, direction.y) + transform.position;
-            //Debug.Log("latePos: " + latePos);
-            //transform.position = target;
-            target = Vector3.Lerp(transform.position, target, timer / 5);
+            //Check among trailList if direction is the bounds of a trail
+            Vector3 forwardCheck = transform.position + (target - transform.position).normalized * .5f;
+            Debug.DrawLine(transform.position, forwardCheck, Color.magenta);
+            foreach (GameObject trail in trailManager.trailList)
+            {
+                if (trail.GetComponent<Collider>().bounds.Contains(forwardCheck))
+                {
+                    Debug.Log("Collision with trail");
+                    if (trail == trailManager.trailList[trailManager.trailList.Count - 1])
+                        trailManager.PopTrail();
+                    else
+                        return;
+                }
+            }
+
+            target = Vector3.Lerp(transform.position, target, lerpSpeed);
             if (currentPathCollider && currentPathCollider.bounds.Contains(target))
                 transform.position = target;
-            timer += Time.deltaTime;
         }
     }
 }
