@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GridMovement : MonoBehaviour
@@ -99,17 +100,23 @@ public class GridMovement : MonoBehaviour
 
             //Check among trailList if direction is the bounds of a trail
             Vector3 forwardCheck = transform.position + (target - transform.position).normalized * .5f;
-            Debug.DrawLine(transform.position, forwardCheck, Color.magenta);
-            foreach (GameObject trail in trailManager.trailList)
+            bool collide = false;
+            foreach (GameObject trail in trailManager.trailList.ToList())
             {
                 if (trail.GetComponent<Collider>().bounds.Contains(forwardCheck))
                 {
                     Debug.Log("Collision with trail");
                     if (trail == trailManager.trailList[trailManager.trailList.Count - 1])
+                    {
+                        Debug.DrawLine(transform.position + new Vector3(0, .51f, 0), forwardCheck + new Vector3(0, .51f, 0), Color.magenta, 3);
                         trailManager.PopTrail();
+                        break;
+                    }
                     else
                         return;
                 }
+                if (collide)
+                    break;
             }
 
             target = Vector3.Lerp(transform.position, target, lerpSpeed);

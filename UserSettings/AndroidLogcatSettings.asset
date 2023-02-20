@@ -3,29 +3,11 @@
     "m_SelectedPackage": {
         "deviceId": "22241FDEE002B5",
         "name": "com.DefaultCompany.ProtoSnakeMake",
-        "processId": 18930,
+        "processId": 24235,
         "exited": false
     },
     "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
-        {
-            "deviceId": "22241FDEE002B5",
-            "name": "com.google.android.apps.nexuslauncher",
-            "processId": 32003,
-            "exited": false
-        },
-        {
-            "deviceId": "22241FDEE002B5",
-            "name": "com.DefaultCompany.ProtoSnakeMake",
-            "processId": 6175,
-            "exited": true
-        },
-        {
-            "deviceId": "22241FDEE002B5",
-            "name": "com.DefaultCompany.ProtoSnakeMake",
-            "processId": 7035,
-            "exited": true
-        },
         {
             "deviceId": "22241FDEE002B5",
             "name": "com.DefaultCompany.ProtoSnakeMake",
@@ -42,12 +24,30 @@
             "deviceId": "22241FDEE002B5",
             "name": "com.DefaultCompany.ProtoSnakeMake",
             "processId": 16483,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "22241FDEE002B5",
             "name": "com.DefaultCompany.ProtoSnakeMake",
             "processId": 18930,
+            "exited": true
+        },
+        {
+            "deviceId": "22241FDEE002B5",
+            "name": "com.google.android.apps.nexuslauncher",
+            "processId": 10071,
+            "exited": false
+        },
+        {
+            "deviceId": "22241FDEE002B5",
+            "name": "com.DefaultCompany.ProtoSnakeMake",
+            "processId": 6975,
+            "exited": false
+        },
+        {
+            "deviceId": "22241FDEE002B5",
+            "name": "com.DefaultCompany.ProtoSnakeMake",
+            "processId": 24235,
             "exited": false
         }
     ],
